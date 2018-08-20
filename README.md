@@ -1,2 +1,2 @@
 # FontConvertor
-FontConverotr finds font family names from PDFont fontFamilyName string
+FontConvertor finds font family names from PDFont fontFamilyName string
