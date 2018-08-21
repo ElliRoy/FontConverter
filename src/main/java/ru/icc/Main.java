@@ -11,7 +11,7 @@ public class Main {
 
     public static void doIt() throws Exception {
         //Документ для примера
-        File file = new File("/Users/EgorRo/Documents/tabbyDoc/DataSet/PDF/us-008.pdf");
+        File file = new File("/Users/EgorRo/Desktop/PDFontsDoc.pdf");
         PDDocument document = PDDocument.load(file);
 
         PDFontConverter pdFontConverter = new PDFontConverter();
