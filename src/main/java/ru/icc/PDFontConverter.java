@@ -1,25 +1,22 @@
 package ru.icc;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
-
+import java.awt.*;
 import java.io.*;
 import java.util.List;
 
 public class PDFontConverter extends PDFTextStripper{
-    private TextPosition firstLetter;
-    private TextPosition lastLetter;
-    private PDFont font = null;
-    private int i = 0;
-
+    private Font font;
+    private Font tempFont;
+    private boolean isFirst = true;
+    private FontFamily ff = new FontFamily();
 
 
     public PDFontConverter() throws IOException {
         super();
     }
-
 
     public void stripPage(int pageNr, PDDocument document) throws IOException {
         this.setStartPage(pageNr+1);
@@ -29,22 +26,22 @@ public class PDFontConverter extends PDFTextStripper{
     }
 
     @Override
-    protected void writeString(String string, List<TextPosition> textPositions) throws IOException {
+    protected void writeString(String string, List<TextPosition> textPositions) {
         for (TextPosition text : textPositions) {
-            PDFont tempFont = text.getFont();
-            if(i==0) {
-                System.out.println("String[" + text.getXDirAdj() + "," + text.getYDirAdj() + " fs=" + text.getFontSizeInPt() +
-                        " xscale=" + text.getXScale() + " height=" + text.getHeightDir() + " space=" + text.getWidthOfSpace() +
-                        " width=" + text.getWidthDirAdj() + " ] " + text.getUnicode()+ " " +             text.getFont().getName());
-                i++;
-                font = tempFont;
-
-
-            } else if (!font.equals(tempFont)){
-                System.out.println("String[" + text.getXDirAdj() + "," + text.getYDirAdj() + " fs=" + text.getFontSizeInPt() +
-                        " xscale=" + text.getXScale() + " height=" + text.getHeightDir() + " space=" + text.getWidthOfSpace() +
-                        " width=" + text.getWidthDirAdj() + " ] " + text.getUnicode());
-                font = tempFont;
+            if(isFirst) {
+                try {
+                    font = ff.getFont(text);
+                    System.out.println(font.toString());
+                    isFirst = false;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                tempFont = ff.getFont(text);
+                if(!tempFont.equals(font)){
+                    System.out.println(tempFont.toString());
+                    font = tempFont;
+                }
             }
         }
     }

@@ -1,125 +1,133 @@
 package ru.icc;
 
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
+import org.apache.pdfbox.text.TextPosition;
+import java.awt.*;
+import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FontFamily {
-
-    /**
-     * Всевозможные название семейств шрифтов
-     */
-    private final String[] fontFamilies1 = new String[]{
-            "3x3", "AdLib", "AdobeJenson", "AgencyFB", "Aharoni", "AkzidenzGrotesk", "Albertus", "Aldus", "Alexandria", "Alexandria",
-            "Algerian", "Allegro", "Alphabetum", "AmericanScribe", "AmericanTypewriter", "AmericanTypewriter", "AMSEuler", "AndaléMono",
-            "AndaléSans", "Andreas", "Andy", "Antiqua", "AntiqueOlive", "Aparajita", "AppleChancery", "AppleSymbols", "Archer", "Arial",
-            "ArialMonospaced", "ArialUnicodeMS", "ArialUnicodeMS", "ArialUnicodeMSrial", "Arno", "ArnoldBöcklin", "AsanaMath", "AshleyScript",
-            "Aster", "Astur", "Athens", "Aurora", "Aurora", "Avenir", "Balloon", "Banco", "BankGothic", "Baskerville", "Bastard", "BatangandGungsuh",
-            "BauerBodoni", "Bauhaus", "Bauhaus", "Bell", "BellCentennial", "BellGothic", "BelweRoman", "Bembo", "BenguiatGothic", "BerkeleyOldStyle",
-            "BerlinSans", "BernhardModern", "BitstreamCyberbit", "BitstreamVera", "BitstreamVeraeraSans", "BitstreamVeraeraSansMono",
-            "BitstreamVeraeraSerif", "BitstreamVeraitstreamVera", "Blackboardbold", "Bodoni", "BookAntiqua", "Bookman", "BookshelfSymbol7",
-            "Braggadocio", "BrandonGrotesque", "BreitkopfFraktur", "Broadway", "BrushScript", "Bulmer", "Caledonia", "Calibri", "Calibri",
-            "CalifornianFB", "CalistoMT", "Cambria", "CambriaMath", "Candida", "Capitals", "Cartier", "Casey", "Caslon", "Caslon",
-            "CaslonAntique", "CaslonAntique", "CaslonAntiqueFifteenthCentury", "CaslonWyld", "Catull", "Centaur", "CenturyGothic",
-            "CenturyOldStyle", "CenturySchoolbook", "CenturySchoolbook", "CenturySchoolbookInfant", "Cézanne", "Chalkboard",
-            "Chandas", "Charcoal", "CharisSIL", "CharisSIL", "Charter", "Cheltenham", "Chicago", "Choc", "ChollaSlab", "City",
-            "Clarendon", "Clearface", "Clearview", "CloisterBlack", "Cochin", "Code2000", "Code2001", "Code2002", "Colonna",
-            "ComicSans", "ComicSansMS", "Compacta", "Compatil", "ComputerModern", "ComputerModern", "ConcreteRoman",
-            "ConcreteRoman", "Consolas", "Constantia", "CooperBlack", "CooperBlack", "CopperplateGothic", "Corbel",
-            "Corona", "CoronaNews705", "Coronet", "Courier", "Courier", "CourierNew", "Curlz", "Curlz", "DejaVufonts",
-            "DejaVufonts", "DejaVufontsejaVuSans", "DejaVufontsejaVuSansMono", "Didone", "Didone", "Didot", "DIN1451IN",
-            "DomCasual", "DomCasual", "Dotum", "Dotum", "DoulosSIL", "DroidfontsroidSans", "DroidfontsroidSansMono",
-            "Droidserif", "Dyslexie", "Easyreading", "EBGaramond", "Ecofont", "Egyptienne", "Elephant", "Ellington",
-            "Emerson", "Eras", "EspySans", "Esseltub", "Eurocrat", "Eurostile", "Eurostilequare721", "EversonMono",
-            "EversonMono", "Excelsior", "Excelsior", "Exocet", "Fairfield", "Fallbackfont", "FetteFraktur", "FFDax",
-            "FFMeta", "FFScala", "FFScalaSans", "FIGScript", "FiraSans", "Fixed", "Fixedsys", "FixedsysExcelsior",
-            "FixedsysExcelsior", "Fletcher", "Folio", "Footlight", "Forte", "Forte", "Fraktur", "FranklinGothic",
-            "Freefont", "FreeSans", "FreeSerif", "FreeUCSOutlineFonts", "FrenchScript", "FrizQuadrata", "Frutiger",
-            "Futura", "Gabriola", "Gadugi", "Garamond", "Generis", "Geneva", "Gentium", "Gentium", "Georgia",
-            "Georgia", "GillSans", "GillSansSchoolbook", "Gloucester", "GNUUnifont", "Gotham", "GoudyOldStyle",
-            "Granjon", "Grassettypefacerasset", "Gravura", "Grecsduroi", "GuardianEgyptian", "Gulim", "Haettenschweiler",
-            "Hanacaraka", "HandelGothic", "HarabaraHand", "HarabaraMais", "Hei", "Helvetica", "HelveticaNeue", "HighTowerText",
-            "HighwayGothic", "Hobo", "HoeflerText", "Horizon", "HyperFont", "IBMPlex", "IBMPlexBMPlexMono", "IBMPlexBMPlexSans",
-            "Impact", "Imprint", "Inconsolata", "Industria", "Interstate", "IonicNo.5", "IonicNo.5", "IonicNo.5News701",
-            "ITCAvantGardevantGardeGothic", "ITCBenguiat", "ITCZapfChancery", "Janson", "JapaneseGothic", "JimCrow", "Joanna",
-            "Johnston", "Jokerman", "Jomolhari", "Junicode", "Kabel", "Kiran", "Klavika", "Kochi", "Koren", "Korinna", "Kristen",
-            "KrutiDev", "KuenstlerScript", "LastResort", "Lato", "LED", "LetterGothic", "Lexia", "Lexicon", "Liberationfonts",
-            "LiberationfontsiberationMono", "LiberationfontsiberationSans", "LinuxBiolinum", "LinuxLibertine", "Literaturnaya",
-            "Lithos", "LoType", "Lucida", "LucidaBlackletter", "LucidaBright", "LucidaConsole", "LucidaGrande", "LucidaGrande",
-            "LucidaHandwriting", "LucidaSansTypewriter", "LucidaSansucidaSans", "LucidaSansUnicode", "LucidaSansUnicode",
-            "LucidaTypewriterSerif", "Luxi", "Lydian", "MalgunGothic", "Marlett", "Meiryo", "Meiryo", "Melior", "Memphis",
-            "Memphis", "Menlo", "Meta", "MICR", "Microgramma", "MicrosoftJhengHei", "MicrosoftYaHei", "Miller", "Minchō",
-            "Ming", "Minion", "Mistral", "Mona", "Monaco", "MonaLisa", "Monospace", "MonotypeCorsiva", "Motorway", "MrsEaves",
-            "MSGothic", "MSGothic", "MSGothic", "MSMincho", "MSMincho", "MSSansSerif", "MSSerif", "Myriad", "NastaliqNavees",
-            "Neuland", "Neutraface", "NeuzeitS", "NewCenturySchoolbook", "NewGulim", "NewsGothic", "NewYork", "Nilland",
-            "NimbusMonoL", "NimbusRoman", "NimbusSans", "NimbusSansL", "Nordstern", "Noto", "NPSRawlinsonRoadway", "Nyala",
-            "OCRAExtended", "OCRAfontCRA", "OCRB", "OldEnglishText", "OldEnglishTextMT", "Onyx", "OpenSans", "Optima",
-            "Overpass", "Palatino", "Papyrus", "Parisine", "Peignot", "Perpetua", "PerpetuaGreek", "Plantin", "Playbill",
-            "Porson", "PragmataPro", "PragmataPro", "PrestigeElite", "Primer", "ProductSans", "ProFont", "Proggyprogrammingfonts",
-            "ProximaNova", "PTSans", "RailAlphabet", "Renault", "Requiem", "Roboto", "RobotoSlab", "Rockwell", "RotisotisSemiSerif",
-            "RotisSans", "RotisSerif", "Sabon", "SanFrancisco", "SanFranciscoanFrancisco", "Schadow", "Schwabacher", "Scripttypefacecript",
-            "SegoeegoeScript", "SegoeegoeUI", "SegoeUISymbol", "Serifa", "Shruti", "SimHei", "SimSun", "SimSun", "Sistina",
-            "SkeletonAntique", "Skia", "Skia", "SourceCodePro", "SourceSansPro", "Souvenir", "SquarishSansCT", "Sreda", "Stencil",
-            "STIX", "STIX", "SwedenSans", "Swift", "Swiss721", "Sylfaen", "Sylfaen", "Symbol", "Syntax", "System", "Tahoma",
-            "Tahoma", "TemplateGothic", "Tengwar", "Terminal", "ThesisSans", "TibetanMachineUni", "Times", "TimesNewRoman",
-            "Tiresias", "TitusCyberbitBasic", "Torino", "Tower", "TradeGothic", "Trajan", "Transport", "TrebuchetMS", "Trinité",
-            "Trixie", "TrumpMediaeval", "TwentiethCenturywentiethCentury", "Ubuntu", "Ubuntu", "Umbra", "Unica", "Univers",
-            "Utopia", "Utopia", "Verdana", "VerdanaerdanaRef", "Webdings", "Westminster", "WideLatin", "WiesbadenSwing",
-            "Willow", "WilsonGreek", "Windsor", "Windsor", "Wingdings", "Wingdings2", "Wingdings3", "XITS", "XITS",
-            "ZapfDingbats", "Zapfino", "Zurich"
-    };
-
-    /**
-     * Самые частые шрифты в PDF документах
-     */
-    private final String[] fontFamilies14 = new String[]{
-            "Arial", "Times", "Courier", "CourierNew", "Helvetica"
-    };
-
-    /**
-     * Самые частые шрифты в PDF документах, но здесь предпочтительнее назввания для шрифтов, чем в <code>fontFamilies14</code>
-     */
-
-    private final String[] fontFamilies14First = new String[]{
-            "Arial", "TimesNewRoman", "CourierNew", "HelveticaNeue", "Symbol", "ZapfDingbats"
-    };
-
-    /**
-     * Используемые далее объекты
-     */
-
+    private String[] fontFamilies1;
+    private String[] fontFamilies2;
+    private String[] fontFamilies3;
     private String f = null;
     private Pattern p;
     private Matcher m;
+    private InputStream inputStream;
 
-
-    public FontFamily() {
-        super();
-    }
 
     /**
-     * Метод ищет в строке <code>font</code> совпадение названия сначала в массиве fontFamilies14First, если нет совпадений,
-     * то далее в массиве <code>fontFamilies14</code> и затем в <code>fontFamilies</code>.
+     * Constructor loads arrays from resources folder
+     */
+
+    public FontFamily(){
+        super();
+        try {
+            inputStream = getClass().getResourceAsStream("/fontFamilies1.ser");
+            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
+            this.fontFamilies1 = (String[]) objectInputStream.readObject();
+
+            inputStream = getClass().getResourceAsStream("/fontFamilies2.ser");
+            objectInputStream = new ObjectInputStream(inputStream);
+            this.fontFamilies2 = (String[]) objectInputStream.readObject();
+
+            inputStream = getClass().getResourceAsStream("/fontFamilies3.ser");
+            objectInputStream = new ObjectInputStream(inputStream);
+            this.fontFamilies3 = (String[]) objectInputStream.readObject();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public Font getFont(TextPosition textPosition) {
+        if (textPosition == null) {
+            return null;
+        }
+
+        PDFont font = textPosition.getFont();
+        PDFontDescriptor fontDescriptor = font.getFontDescriptor();
+        if (font == null)
+            return null;
+
+        String fontName = fontDescriptor.getFontName();
+
+        //font name
+        String resultName;
+        if (fontName != null)
+            resultName = getFontFamily(fontName);
+        else
+            return null;
+
+        //is font italic?
+        boolean isFontItalic;
+        if (fontDescriptor.isItalic()) {
+            isFontItalic = true;
+        } else if (fontName.toLowerCase().contains("oblique")) {
+            isFontItalic = true;
+        } else if (fontName.toLowerCase().contains("italic")) {
+            isFontItalic = true;
+        } else {
+            isFontItalic = false;
+        }
+
+        //Is font bold?
+        boolean isFontBold;
+        if (fontDescriptor.isForceBold()) {
+            isFontBold = true;
+        } else if (fontDescriptor.getFontWeight() >= 700) {
+            isFontBold = true;
+        } else if (fontDescriptor.getFontName().toLowerCase().contains("bold")) {
+            isFontBold = true;
+        } else {
+            isFontBold = false;
+        }
+
+        //font size in pt
+        float fontSize = (int) textPosition.getFontSizeInPt();
+
+        //return object java.awt.Font
+        if(isFontBold){
+            if(isFontItalic){
+                return new Font(resultName, Font.BOLD+Font.ITALIC, (int) fontSize);
+            } else {
+                return new Font(resultName, Font.BOLD, (int) fontSize);
+            }
+        } else {
+            if(isFontItalic){
+                return new Font(resultName, Font.ITALIC, (int) fontSize);
+            } else {
+                return new Font(resultName, Font.PLAIN, (int) fontSize);
+            }
+        }
+    }
+
+
+    /**
+     * Метод ищет в строке <code>font</code> совпадение названия сначала в массиве fontFamilies3, если нет совпадений,
+     * то далее в массиве <code>fontFamilies2</code> и затем в <code>fontFamilies</code>.
      *
      * @param font Строка, которую получаем из <code>font.getFontName</code>
      * @return Название шрифта
      **/
 
-    public String getFontFamily(String font) {
+    private String getFontFamily(String font) {
         f = null;
         for (int i = 0; i < 6; i++) {
-            p = Pattern.compile(fontFamilies14First[i], Pattern.CASE_INSENSITIVE);
+            p = Pattern.compile(fontFamilies3[i], Pattern.CASE_INSENSITIVE);
             m = p.matcher(font);
             if (m.find()) {
-                f = fontFamilies14First[i];
+                f = fontFamilies3[i];
                 break;
             }
         }
         if (f == null) {
             for (int i = 0; i < 5; i++) {
-                p = Pattern.compile(fontFamilies14[i], Pattern.CASE_INSENSITIVE);
+                p = Pattern.compile(fontFamilies2[i], Pattern.CASE_INSENSITIVE);
                 m = p.matcher(font);
                 if (m.find()) {
-                    f = fontFamilies14[i];
+                    f = fontFamilies2[i];
                     break;
                 }
             }
@@ -134,7 +142,7 @@ public class FontFamily {
                 }
             }
         }
-        if(f == null)
+        if (f == null)
             f = font;
         return f;
     }
