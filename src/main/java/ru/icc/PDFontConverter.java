@@ -126,7 +126,7 @@ public class PDFontConverter extends PDFTextStripper{
         boolean isFontBold;
         if (fontDescriptor.isForceBold()) {
             isFontBold = true;
-        } else if (fontDescriptor.getFontWeight() >= 700) {
+        } else if (fontDescriptor.getFontWeight() >= 400) {
             isFontBold = true;
         } else if (fontDescriptor.getFontName().toLowerCase().contains("bold")) {
             isFontBold = true;
@@ -137,8 +137,6 @@ public class PDFontConverter extends PDFTextStripper{
             } else {
                 isFontBold = false;
             }
-
-            isFontBold = false;
         }
 
         //font size in pt
