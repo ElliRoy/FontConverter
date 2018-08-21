@@ -1,2 +1,2 @@
 # FontConvertor
-FontConvertor finds font family names from PDFont fontFamilyName string
+FontConvertor converts PDFont to java.awt.Font
