@@ -86,11 +86,6 @@ public class PDFontConverter extends PDFTextStripper{
     private Matcher m;
     private InputStream inputStream;
 
-
-    /**
-     * Constructor loads arrays from resources folder
-     */
-
     private Font getFont(TextPosition textPosition) {
         if (textPosition == null) {
             return null;
