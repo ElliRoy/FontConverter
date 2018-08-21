@@ -38,9 +38,13 @@ public class PDFontConverter extends PDFTextStripper{
                 }
             } else {
                 tempFont = ff.getFont(text);
-                if(!tempFont.equals(font)){
-                    System.out.println(tempFont.toString());
-                    font = tempFont;
+                if (tempFont == null) {
+                    System.out.println("null");
+                } else {
+                    if (!tempFont.equals(font)) {
+                        System.out.println(tempFont.toString());
+                        font = tempFont;
+                    }
                 }
             }
         }
