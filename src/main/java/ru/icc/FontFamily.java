@@ -2,6 +2,7 @@ package ru.icc;
 
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
+import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.apache.pdfbox.text.TextPosition;
 import java.awt.*;
 import java.io.*;
@@ -22,7 +23,7 @@ public class FontFamily {
      * Constructor loads arrays from resources folder
      */
 
-    public FontFamily(){
+    public FontFamily() {
         super();
         try {
             inputStream = getClass().getResourceAsStream("/fontFamilies1.ser");
@@ -36,7 +37,7 @@ public class FontFamily {
             inputStream = getClass().getResourceAsStream("/fontFamilies3.ser");
             objectInputStream = new ObjectInputStream(inputStream);
             this.fontFamilies3 = (String[]) objectInputStream.readObject();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -50,7 +51,12 @@ public class FontFamily {
         PDFontDescriptor fontDescriptor = font.getFontDescriptor();
         if (font == null)
             return null;
+        if (fontDescriptor == null)
+            return null;
 
+        if (fontDescriptor.getFontName() == null) {
+            return null;
+        }
         String fontName = fontDescriptor.getFontName();
 
         //font name
@@ -81,6 +87,13 @@ public class FontFamily {
         } else if (fontDescriptor.getFontName().toLowerCase().contains("bold")) {
             isFontBold = true;
         } else {
+            /*RenderingMode rm = renderingMode.get(textPosition);
+            if (rm == RenderingMode.FILL_STROKE) {
+                isFontBold = true;
+            } else {
+                isFontBold = false;
+            }
+            */
             isFontBold = false;
         }
 
