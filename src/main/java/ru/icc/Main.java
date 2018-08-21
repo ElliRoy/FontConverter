@@ -14,7 +14,6 @@ public class Main {
         File file = new File("PDFontsDoc.pdf");
         PDDocument document = PDDocument.load(file);
 
-        //Здесь просто вытаскиваем шрифты
         PDFontConverter pdFontConverter = new PDFontConverter();
 
         for(int i = 0; i <document.getNumberOfPages(); i++){
