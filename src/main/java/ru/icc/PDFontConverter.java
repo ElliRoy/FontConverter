@@ -103,6 +103,7 @@ public class PDFontConverter extends PDFTextStripper{
 
         PDFont font = textPosition.getFont();
         PDFontDescriptor fontDescriptor = font.getFontDescriptor();
+
         if (font == null || fontDescriptor == null || fontDescriptor.getFontName() == null)
             return null;
 
@@ -137,32 +138,24 @@ public class PDFontConverter extends PDFTextStripper{
         }
 
         //font size in pt
-        float fontSize = (int) textPosition.getFontSizeInPt();
+        int fontSize = (int) textPosition.getFontSizeInPt();
 
         //return object java.awt.Font
         if(isFontBold){
             if(isFontItalic){
-                return new Font(resultName, Font.BOLD+Font.ITALIC, (int) fontSize);
+                return new Font(resultName,Font.BOLD+Font.ITALIC, fontSize);
             } else {
-                return new Font(resultName, Font.BOLD, (int) fontSize);
+                return new Font(resultName, Font.BOLD, fontSize);
             }
         } else {
             if(isFontItalic){
-                return new Font(resultName, Font.ITALIC, (int) fontSize);
+                return new Font(resultName, Font.ITALIC, fontSize);
             } else {
-                return new Font(resultName, Font.PLAIN, (int) fontSize);
+                return new Font(resultName, Font.PLAIN, fontSize);
             }
         }
     }
-
-    /**
-     * Метод ищет в строке <code>font</code> совпадение названия сначала в массиве fontFamilies3, если нет совпадений,
-     * то далее в массиве <code>fontFamilies2</code> и затем в <code>fontFamilies</code>.
-     *
-     * @param font Строка, которую получаем из <code>font.getFontName</code>
-     * @return Название шрифта
-     **/
-
+    
     private String getFontFamily(String font) {
         f = null;
 
