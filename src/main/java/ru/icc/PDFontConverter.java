@@ -141,14 +141,14 @@ public class PDFontConverter extends PDFTextStripper{
         int fontSize = (int) textPosition.getFontSizeInPt();
 
         //return object java.awt.Font
-        if(isFontBold){
-            if(isFontItalic){
-                return new Font(resultName,Font.BOLD+Font.ITALIC, fontSize);
+        if (isFontBold) {
+            if (isFontItalic) {
+                return new Font(resultName, Font.BOLD + Font.ITALIC, fontSize);
             } else {
                 return new Font(resultName, Font.BOLD, fontSize);
             }
         } else {
-            if(isFontItalic){
+            if (isFontItalic) {
                 return new Font(resultName, Font.ITALIC, fontSize);
             } else {
                 return new Font(resultName, Font.PLAIN, fontSize);
