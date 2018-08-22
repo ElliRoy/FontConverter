@@ -6,44 +6,42 @@ import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
+
 import java.awt.*;
 import java.io.*;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PDFontConverter extends PDFTextStripper{
+    private final Map<TextPosition, RenderingMode> renderingMode = new HashMap<>();
     private Font font;
     private Font tempFont;
     private boolean isFirst = true;
-    private final Map<TextPosition, RenderingMode> renderingMode = new HashMap<>();
+    private ArrayList<String> fontFamilies1 = new ArrayList<>();
+    private ArrayList<String> fontFamilies2 = new ArrayList<>();
+    private ArrayList<String> fontFamilies3 = new ArrayList<>();
+    private String f = null;
+    private Pattern p;
+    private Matcher m;
+
+    public PDFontConverter() throws IOException {
+        super();
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream("fontFamilies1.txt");
+        setFontFamilies1(inputStream);
+        inputStream = classLoader.getResourceAsStream("fontFamilies2.txt");
+        setFontFamilies2(inputStream);
+        inputStream = classLoader.getResourceAsStream("fontFamilies3.txt");
+        setFontFamilies3(inputStream);
+        inputStream.close();
+    }
 
     @Override
     protected void processTextPosition(TextPosition text) {
         renderingMode.put(text, getGraphicsState().getTextState().getRenderingMode());
         super.processTextPosition(text);
-    }
-
-
-    public PDFontConverter() throws IOException {
-        super();
-        try {
-            inputStream = getClass().getResourceAsStream("/fontFamilies1.ser");
-            ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-            this.fontFamilies1 = (String[]) objectInputStream.readObject();
-
-            inputStream = getClass().getResourceAsStream("/fontFamilies2.ser");
-            objectInputStream = new ObjectInputStream(inputStream);
-            this.fontFamilies2 = (String[]) objectInputStream.readObject();
-
-            inputStream = getClass().getResourceAsStream("/fontFamilies3.ser");
-            objectInputStream = new ObjectInputStream(inputStream);
-            this.fontFamilies3 = (String[]) objectInputStream.readObject();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void stripPage(int pageNr, PDDocument document) throws IOException {
@@ -78,13 +76,26 @@ public class PDFontConverter extends PDFTextStripper{
         }
     }
 
-    private String[] fontFamilies1;
-    private String[] fontFamilies2;
-    private String[] fontFamilies3;
-    private String f = null;
-    private Pattern p;
-    private Matcher m;
-    private InputStream inputStream;
+    private void setFontFamilies1(InputStream inputStream) {
+        Scanner scanner = new Scanner(inputStream);
+        while(scanner.hasNextLine()){
+            fontFamilies1.add(scanner.nextLine());
+        }
+    }
+
+    private void setFontFamilies2(InputStream inputStream) {
+        Scanner scanner = new Scanner(inputStream);
+        while(scanner.hasNextLine()){
+            fontFamilies2.add(scanner.nextLine());
+        }
+    }
+
+    private void setFontFamilies3(InputStream inputStream) {
+        Scanner scanner = new Scanner(inputStream);
+        while(scanner.hasNextLine()){
+            fontFamilies3.add(scanner.nextLine());
+        }
+    }
 
     private Font getFont(TextPosition textPosition) {
         if (textPosition == null) {
@@ -126,7 +137,7 @@ public class PDFontConverter extends PDFTextStripper{
         boolean isFontBold;
         if (fontDescriptor.isForceBold()) {
             isFontBold = true;
-        } else if (fontDescriptor.getFontWeight() >= 400) {
+        } else if (fontDescriptor.getFontWeight() >= 700) {
             isFontBold = true;
         } else if (fontDescriptor.getFontName().toLowerCase().contains("bold")) {
             isFontBold = true;
@@ -169,29 +180,30 @@ public class PDFontConverter extends PDFTextStripper{
 
     private String getFontFamily(String font) {
         f = null;
-        for (int i = 0; i < 6; i++) {
-            p = Pattern.compile(fontFamilies3[i], Pattern.CASE_INSENSITIVE);
+
+        for (int i = 0; i < fontFamilies3.size(); i++) {
+            p = Pattern.compile(fontFamilies3.get(i), Pattern.CASE_INSENSITIVE);
             m = p.matcher(font);
             if (m.find()) {
-                f = fontFamilies3[i];
+                f = fontFamilies3.get(i);
                 break;
             }
         }
         if (f == null) {
-            for (int i = 0; i < 5; i++) {
-                p = Pattern.compile(fontFamilies2[i], Pattern.CASE_INSENSITIVE);
+            for (int i = 0; i < fontFamilies2.size(); i++) {
+                p = Pattern.compile(fontFamilies2.get(i), Pattern.CASE_INSENSITIVE);
                 m = p.matcher(font);
                 if (m.find()) {
-                    f = fontFamilies2[i];
+                    f = fontFamilies2.get(i);
                     break;
                 }
             }
             if (f == null) {
-                for (int i = 0; i < 467; i++) {
-                    p = Pattern.compile(fontFamilies1[i], Pattern.CASE_INSENSITIVE);
+                for (int i = 0; i < fontFamilies3.size(); i++) {
+                    p = Pattern.compile(fontFamilies1.get(i), Pattern.CASE_INSENSITIVE);
                     m = p.matcher(font);
                     if (m.find()) {
-                        f = fontFamilies1[i];
+                        f = fontFamilies1.get(i);
                         break;
                     }
                 }
