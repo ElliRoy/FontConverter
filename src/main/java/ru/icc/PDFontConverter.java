@@ -104,14 +104,9 @@ public class PDFontConverter extends PDFTextStripper{
 
         PDFont font = textPosition.getFont();
         PDFontDescriptor fontDescriptor = font.getFontDescriptor();
-        if (font == null)
-            return null;
-        if (fontDescriptor == null)
+        if (font == null || fontDescriptor == null || fontDescriptor.getFontName() == null)
             return null;
 
-        if (fontDescriptor.getFontName() == null) {
-            return null;
-        }
         String fontName = fontDescriptor.getFontName();
 
         //font name
@@ -143,11 +138,7 @@ public class PDFontConverter extends PDFTextStripper{
             isFontBold = true;
         } else {
             RenderingMode rm = renderingMode.get(textPosition);
-            if (rm == RenderingMode.FILL_STROKE) {
-                isFontBold = true;
-            } else {
-                isFontBold = false;
-            }
+            isFontBold = (rm == RenderingMode.FILL_STROKE);
         }
 
         //font size in pt
