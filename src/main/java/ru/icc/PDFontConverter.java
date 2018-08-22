@@ -155,7 +155,7 @@ public class PDFontConverter extends PDFTextStripper{
             }
         }
     }
-    
+
     private String getFontFamily(String font) {
         f = null;
 
