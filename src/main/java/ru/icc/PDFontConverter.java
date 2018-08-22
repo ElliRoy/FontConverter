@@ -184,11 +184,11 @@ public class PDFontConverter extends PDFTextStripper{
                 }
             }
             if (f == null) {
-                for (String aFontFamilies3 : fontFamilies3) {
-                    p = Pattern.compile(aFontFamilies3, Pattern.CASE_INSENSITIVE);
+                for (String aFontFamilies1 : fontFamilies1) {
+                    p = Pattern.compile(aFontFamilies1, Pattern.CASE_INSENSITIVE);
                     m = p.matcher(font);
                     if (m.find()) {
-                        f = aFontFamilies3;
+                        f = aFontFamilies1;
                         break;
                     }
                 }
