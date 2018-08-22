@@ -16,25 +16,29 @@ import java.util.regex.Pattern;
 
 public class PDFontConverter extends PDFTextStripper{
     private final Map<TextPosition, RenderingMode> renderingMode = new HashMap<>();
-    private Font font;
+    private Font font = null;
     private Font tempFont;
-    private boolean isFirst = true;
     private ArrayList<String> fontFamilies1 = new ArrayList<>();
     private ArrayList<String> fontFamilies2 = new ArrayList<>();
     private ArrayList<String> fontFamilies3 = new ArrayList<>();
-    private String f = null;
+    private String f;
     private Pattern p;
     private Matcher m;
+    private Scanner scanner;
 
     public PDFontConverter() throws IOException {
         super();
+
         ClassLoader classLoader = getClass().getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream("fontFamilies1.txt");
         setFontFamilies1(inputStream);
+
         inputStream = classLoader.getResourceAsStream("fontFamilies2.txt");
         setFontFamilies2(inputStream);
+
         inputStream = classLoader.getResourceAsStream("fontFamilies3.txt");
         setFontFamilies3(inputStream);
+
         inputStream.close();
     }
 
@@ -44,24 +48,19 @@ public class PDFontConverter extends PDFTextStripper{
         super.processTextPosition(text);
     }
 
-    public void stripPage(int pageNr, PDDocument document) throws IOException {
-        this.setStartPage(pageNr+1);
-        this.setEndPage(pageNr+1);
-        Writer dummy = new OutputStreamWriter(new ByteArrayOutputStream());
-        writeText(document, dummy);
+    public void stripPage(int pageNumber, PDDocument document) throws IOException {
+        this.setStartPage(pageNumber+1);
+        this.setEndPage(pageNumber+1);
+        Writer writer = new OutputStreamWriter(new ByteArrayOutputStream());
+        writeText(document, writer);
     }
 
     @Override
     protected void writeString(String string, List<TextPosition> textPositions) {
         for (TextPosition text : textPositions) {
-            if(isFirst) {
-                try {
-                    font = getFont(text);
-                    System.out.println(font.toString());
-                    isFirst = false;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            if(font == null) {
+                font = getFont(text);
+                System.out.println(font.toString());
             } else {
                 tempFont = getFont(text);
                 if (tempFont == null) {
@@ -77,21 +76,21 @@ public class PDFontConverter extends PDFTextStripper{
     }
 
     private void setFontFamilies1(InputStream inputStream) {
-        Scanner scanner = new Scanner(inputStream);
-        while(scanner.hasNextLine()){
+        scanner = new Scanner(inputStream);
+        while(scanner.hasNextLine()) {
             fontFamilies1.add(scanner.nextLine());
         }
     }
 
     private void setFontFamilies2(InputStream inputStream) {
-        Scanner scanner = new Scanner(inputStream);
+        scanner = new Scanner(inputStream);
         while(scanner.hasNextLine()){
             fontFamilies2.add(scanner.nextLine());
         }
     }
 
     private void setFontFamilies3(InputStream inputStream) {
-        Scanner scanner = new Scanner(inputStream);
+        scanner = new Scanner(inputStream);
         while(scanner.hasNextLine()){
             fontFamilies3.add(scanner.nextLine());
         }
@@ -122,11 +121,7 @@ public class PDFontConverter extends PDFTextStripper{
             isFontItalic = true;
         } else if (fontName.toLowerCase().contains("oblique")) {
             isFontItalic = true;
-        } else if (fontName.toLowerCase().contains("italic")) {
-            isFontItalic = true;
-        } else {
-            isFontItalic = false;
-        }
+        } else isFontItalic = fontName.toLowerCase().contains("italic");
 
         //Is font bold?
         boolean isFontBold;
@@ -171,29 +166,29 @@ public class PDFontConverter extends PDFTextStripper{
     private String getFontFamily(String font) {
         f = null;
 
-        for (int i = 0; i < fontFamilies3.size(); i++) {
-            p = Pattern.compile(fontFamilies3.get(i), Pattern.CASE_INSENSITIVE);
+        for (String aFontFamilies3 : fontFamilies3) {
+            p = Pattern.compile(aFontFamilies3, Pattern.CASE_INSENSITIVE);
             m = p.matcher(font);
             if (m.find()) {
-                f = fontFamilies3.get(i);
+                f = aFontFamilies3;
                 break;
             }
         }
         if (f == null) {
-            for (int i = 0; i < fontFamilies2.size(); i++) {
-                p = Pattern.compile(fontFamilies2.get(i), Pattern.CASE_INSENSITIVE);
+            for (String aFontFamilies2 : fontFamilies2) {
+                p = Pattern.compile(aFontFamilies2, Pattern.CASE_INSENSITIVE);
                 m = p.matcher(font);
                 if (m.find()) {
-                    f = fontFamilies2.get(i);
+                    f = aFontFamilies2;
                     break;
                 }
             }
             if (f == null) {
-                for (int i = 0; i < fontFamilies3.size(); i++) {
-                    p = Pattern.compile(fontFamilies1.get(i), Pattern.CASE_INSENSITIVE);
+                for (String aFontFamilies3 : fontFamilies3) {
+                    p = Pattern.compile(aFontFamilies3, Pattern.CASE_INSENSITIVE);
                     m = p.matcher(font);
                     if (m.find()) {
-                        f = fontFamilies1.get(i);
+                        f = aFontFamilies3;
                         break;
                     }
                 }
