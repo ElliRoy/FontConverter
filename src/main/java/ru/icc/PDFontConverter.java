@@ -3,7 +3,6 @@ package ru.icc;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDFontDescriptor;
-
 import org.apache.pdfbox.pdmodel.graphics.state.RenderingMode;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.TextPosition;
@@ -169,7 +168,6 @@ public class PDFontConverter extends PDFTextStripper{
             }
         }
     }
-
 
     /**
      * Метод ищет в строке <code>font</code> совпадение названия сначала в массиве fontFamilies3, если нет совпадений,
